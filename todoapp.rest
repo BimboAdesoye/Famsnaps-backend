@@ -1,0 +1,30 @@
+### Register a user POST
+POST http://localhost:2020/auth/register
+Content-Type: application/json
+
+{
+    "username": "test3",
+    "email": "test3@gmail.com",
+    "password": "testing3"
+}
+
+
+### Login a user POST
+POST http://localhost:2020/auth/login
+Content-Type: application/json
+
+{
+  "email": "test3@gmail.com",
+  "password": "testing3"
+}
+
+
+### Complete your profile
+POST http://localhost:2020/auth/complete-profile
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNzM2MjQxMTY0LCJleHAiOjE3MzYyNDQ3NjR9.8RdIp6u_jJZbJ_Y5Xynx4mkglelZPx2M8ZQq188SAGA
+Content-Type: application/json
+
+{
+  "name": "Mance Rayder",
+  "bio": "I am a product manager"
+}

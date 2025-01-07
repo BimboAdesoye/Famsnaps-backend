@@ -1,15 +1,15 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken"; 
 
 const authMiddleware = (req, res, next) => {
+  const token = req.headers["authorization"];
+   if (!token) {
+     console.log("Must be logged in to view the page");
+     res.status(401).json({ status: "false", errMessage: "unauthorized" });
+     return;
+   }
   try {
-    const token = req.headers.authorization;
-    if (!token) {
-      console.log("Must be logged in to view the page");
-      res.status(401).json({ status: "false", errMessage: "unauthorized" });
-      return;
-    }
-    const verified = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = verified.user;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.userId = decoded.id;
     next();
   } catch (error) {
     console.log(error);
@@ -17,4 +17,13 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-module.exports = authMiddleware;
+export default authMiddleware;
+
+
+// jwt.verify(token, process.env.JWT_secret, (err, decoded) => {
+//   if (err) {
+//     return res.status(401).json({ message: "Invalid token" });
+//   }
+//   req.userId = decoded.id;
+//   next();
+// });

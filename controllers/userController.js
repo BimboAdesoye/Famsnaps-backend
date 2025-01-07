@@ -11,9 +11,10 @@ export const registerUserController = async (req, res) => {
     const existingUser = await prisma.user.findUnique({
       where: {
         email: email,
+        username: username
       },
     });
-
+    
     if (existingUser) {
       return res
         .status(400)

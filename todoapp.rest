@@ -3,9 +3,19 @@ POST http://localhost:2020/auth/register
 Content-Type: application/json
 
 {
-    "username": "test3",
-    "email": "test3@gmail.com",
-    "password": "testing3"
+    "username": "test5",
+    "email": "test5@gmail.com",
+    "password": "testing5"
+}
+
+### Register a user POST
+POST https://famsnaps-backend-api.onrender.com/auth/register
+Content-Type: application/json
+
+{
+    "username": "test7",
+    "email": "test7@gmail.com",
+    "password": "testing7"
 }
 
 

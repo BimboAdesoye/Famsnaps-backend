@@ -3,10 +3,11 @@
 // }
 
 import express from "express";
-const app = express();
 import cors from "cors";
 import cookieParser from "cookie-parser";
+
 const port = process.env.PORT || 2020;
+const app = express();
 
 app.use(cors());
 app.use(express.json());

@@ -1,10 +1,9 @@
 import jwt from "jsonwebtoken"; 
 
 const authMiddleware = (req, res, next) => {
-  const token = req.headers["authorization"];
+  const token = req.cookies.token;
    if (!token) {
-     console.log("Must be logged in to view the page");
-     res.status(401).json({ status: "false", errMessage: "unauthorized" });
+     res.status(401).json({ isAuthenticated: "false", message: "unauthorized" });
      return;
    }
   try {
@@ -13,17 +12,8 @@ const authMiddleware = (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    res.status(401).json({ errMessage: "Token is not valid. Unauthorized" });
+    res.status(401).json({isAuthenticated: false, message: "Invalid token. Unauthorized" });
   }
 };
 
 export default authMiddleware;
-
-
-// jwt.verify(token, process.env.JWT_secret, (err, decoded) => {
-//   if (err) {
-//     return res.status(401).json({ message: "Invalid token" });
-//   }
-//   req.userId = decoded.id;
-//   next();
-// });

@@ -11,10 +11,10 @@ export const registerUserController = async (req, res) => {
     const existingUser = await prisma.user.findUnique({
       where: {
         email: email,
-        username: username
+        username: username,
       },
     });
-    
+
     if (existingUser) {
       return res
         .status(400)
@@ -38,8 +38,16 @@ export const registerUserController = async (req, res) => {
     const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
     console.log(username, password);
-    res.status(201).json({ token, message: "Registered successfully" });
+    res.status(201).json({ message: "Registered successfully" });
   } catch (error) {
     console.log(error.message);
     res.sendStatus(503);
@@ -58,7 +66,7 @@ export const loginUserController = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(400).json({ message: "User not found" });
+      return res.status(400).json({ message: "This User not found" });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -76,9 +84,15 @@ export const loginUserController = async (req, res) => {
       expiresIn: "1h",
     });
 
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
     if (!profile) {
       return res.status(200).json({
-        token,
         message: "Login successful. Please, complete your profile.",
         profileIncomplete: true,
         //Use this in the frontend as so: if (response.data.profileIncomplete) {
@@ -91,7 +105,7 @@ export const loginUserController = async (req, res) => {
 
     res
       .status(200)
-      .json({ token, message: "Login successful", profileIncomplete: false });
+      .json({ message: "Login successful", profileIncomplete: false });
   } catch (error) {
     console.log(error.message);
     res.sendStatus(503);
@@ -128,8 +142,33 @@ export const completeProfileController = async (req, res) => {
   }
 };
 
-// export default {
-//   registerUserController,
-//   loginUserController,
-//   completeProfileController,
-// };
+// Check authentication endpoint
+export const checkAuthController = async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+      select: { id: true, username: true, email: true, profile: true },
+    });
+
+    if (!user) {
+      return res
+        .status(401)
+        .json({ isAuthenticated: false, message: "User not found" });
+    }
+
+    res
+      .status(200)
+      .json({
+        isAuthenticated: true,
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          profileComplete: !!user.profile,
+        },
+      });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ isAuthenticated: false, message: "Server error" });
+  }
+};

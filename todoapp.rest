@@ -3,9 +3,9 @@ POST http://localhost:2020/auth/register
 Content-Type: application/json
 
 {
-    "username": "test7",
-    "email": "test7@gmail.com",
-    "password": "testing7"
+    "username": "Opeyemi Aminu",
+    "email": "opeyemi10@gmail.com",
+    "password": "opeyemi10!"
 }
 
 
